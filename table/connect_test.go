@@ -1,11 +1,11 @@
-package structure
+package table
 
 import (
 	"log"
 	"testing"
 )
 
-func TestTable(t *testing.T) {
+func TestOpen(t *testing.T) {
 		config := DBConfig{
 			UserName: "root",
 			UserPassword: "lotus20001006",
@@ -18,5 +18,7 @@ func TestTable(t *testing.T) {
 			log.Println(err)
 			return
 		}
-		db.Table("hello2")
+		log.Println("dbname: " + db.DBName)
+		return
 }
+

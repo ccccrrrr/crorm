@@ -1,63 +1,39 @@
 package main
 
 import (
-	crorm "crorm/structure"
+	"crorm/config"
+	"crorm/table"
 	"log"
 )
 
 type Info struct {
-	Name string `crorm:"name"`
-	Age int `crorm:"age"`
+	Name   string `crorm:"name"`
+	Age    int    `crorm:"age"`
 	Gender string `crorm:"gender"`
+	Hello  string `crorm:"hello"`
 }
+
 func main() {
-	config := crorm.DBConfig{
-		UserName: "root",
-		UserPassword: "xxx",
-		Port : "3306",
-		Ip : "localhost",
-		DBName: "db1",
-	}
-	db, err := crorm.Open(config)
 
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	db, _ := table.Open(config.Config)
 
-	var info Info
+	myTable := db.Table("Info11")
 
-	db.CreateTable("Info1", &info)
+	infoFind := make([]Info, 20)
 
-	table := db.Table("info1")
-	var res Info
+	//var infoFind []Info
 
-	info1 := Info{
-		"ccrrrr",
-		111,
-		"nnn",
-	}
-	info2 := Info {
-		"ccrr",
-		111,
-		"nnn",
-	}
+	//info := Info{
+	//	Name: "=_=",
+	//	Age: 23,
+	//	Gender: "male",
+	//	Hello: "hello",
+	//}
+	//
+	//myTable.Insert(&info)
 
+	myTable.Find(&infoFind)
 
-	table.Insert(&info1)
-	table.Insert(&info2)
+	log.Println(infoFind)
 
-	var res Info
-
-	table.Where("name = ?", "ccrr").First(&res)
-
-	log.Println(res)
-
-	table.Where("name = ?", "ccrrrr").Update("name = ?", "ccccrrrr")
-
-	table.Where("name = ?", "ccccrrrr").Delete(&res)
-
-	table.First(&res)
-
-	log.Println(res)
 }

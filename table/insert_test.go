@@ -1,11 +1,11 @@
-package structure
+package table
 
 import (
 	"log"
 	"testing"
 )
 
-func TestTable_Delete(t *testing.T) {
+func TestTable_insert(t *testing.T) {
 	config := DBConfig{
 		UserName: "root",
 		UserPassword: "lotus20001006",
@@ -18,14 +18,15 @@ func TestTable_Delete(t *testing.T) {
 		log.Println(err)
 		return
 	}
-	type hello struct {
+	type hello2 struct {
 		Name string
 		Say string
 		Number int64
 	}
-	hhhhello := hello{}
-
-	db.Table("Hello").Where("number = ?", 3).Delete(&hhhhello)
-	log.Printf("info: %v\n", hhhhello)
-
+	hhello := hello2{
+		"China",
+		"nihao",
+		3,
+	}
+	db.Table("hello2").Insert(&hhello)
 }

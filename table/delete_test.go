@@ -1,12 +1,11 @@
-package structure
+package table
 
 import (
 	"log"
 	"testing"
 )
 
-func TestTable_Where(t *testing.T) {
-
+func TestTable_Delete(t *testing.T) {
 	config := DBConfig{
 		UserName: "root",
 		UserPassword: "lotus20001006",
@@ -19,5 +18,14 @@ func TestTable_Where(t *testing.T) {
 		log.Println(err)
 		return
 	}
-	db.Table("Hello").Where("number = ?", 3)
+	type hello struct {
+		Name string
+		Say string
+		Number int64
+	}
+	hhhhello := hello{}
+
+	db.Table("Hello").Where("number = ?", 3).Delete(&hhhhello)
+	log.Printf("info: %v\n", hhhhello)
+
 }

@@ -1,34 +1,36 @@
-package structure
+package table
 
 import (
+	"crorm/typeMap"
 	"fmt"
 	"log"
 	"reflect"
 )
 
-func (db *DB) CreateTable(tableName string, config interface{}) (*DB, error) {
+type TableConfig struct {
+	TableName    string
+	ColumnType   []string
+	ColumnName   []string
+	ColumnGoType []string
+}
+
+func (db *DB) CreateTable(tableName string, config interface{}) (*Table, error) {
 	tableConfig := generateTableConfig(config)
 	tableConfig.TableName = tableName
 	query := generateCreateTableQuery(tableConfig)
-//	log.Println("query: " + query)
 	_, err := db.DefaultDB.Exec(query)
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		// if the table already exist, crorm will match the name and type of the table
+		// if all of the details are matched, you can just load the table
+		return db.Table(tableName), err
 	}
-	//tableLink := &Table{
-	//	DBInfo: db,
-	//	TableName: tableConfig.TableName,
-	//	ColumnName: tableConfig.ColumnName,
-	//	ColumnType: tableConfig.ColumnType,
-	//}
-	return db, nil
+	return db.Table(tableName), nil
 }
 
 func generateTableConfig(defaultConfig interface{}) *TableConfig {
 	tableConfig := &TableConfig{}
 	tableConfig.TableName = fmt.Sprintf("%v", defaultConfig)
-//	log.Println("tablename: " + tableConfig.TableName)
 	_t := reflect.TypeOf(defaultConfig)
 	if _t.Kind() != reflect.Ptr || _t.Elem().Kind() != reflect.Struct {
 		log.Println("参数应该为结构体指针")
@@ -49,7 +51,7 @@ func generateTableConfig(defaultConfig interface{}) *TableConfig {
 		}
 		tableConfig.ColumnName = append(tableConfig.ColumnName, name)
 		tableConfig.ColumnGoType = append(tableConfig.ColumnGoType, v.Elem().Field(i).Kind().String())
-		_type = TypeMap[v.Elem().Field(i).Kind().String()]
+		_type = typeMap.TypeMap[v.Elem().Field(i).Kind().String()]
 		tableConfig.ColumnType = append(tableConfig.ColumnType, _type)
 	}
 	return tableConfig
@@ -58,13 +60,6 @@ func generateTableConfig(defaultConfig interface{}) *TableConfig {
 
 func generateCreateTableQuery(tableConfig *TableConfig) string {
 	query := "CREATE TABLE `" + tableConfig.TableName + "` (\n"
-	//result, err := db.DefaultDB.Exec("CREATE TABLE `userinfo` (\n " +
-	//	"`uid` int(10) NOT NULL AUTO_INCREMENT,\n  " +
-	//	"`username` varchar(64) DEFAULT NULL,\n " +
-	//	"`departname` varchar(64) DEFAULT NULL,\n " +
-	//	"`created` date DEFAULT NULL,\n " +
-	//	"PRIMARY KEY (`uid`)\n" +
-	//	")")
 	ColumnType := tableConfig.ColumnType
 	ColumnName := tableConfig.ColumnName
 	for i := 0; i < len(tableConfig.ColumnName); i++ {

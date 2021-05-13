@@ -1,11 +1,11 @@
-package structure
+package table
 
 import (
 	"log"
 	"testing"
 )
 
-func TestTable_Find(t *testing.T) {
+func Test_list_First(t *testing.T) {
 	config := DBConfig{
 		UserName: "root",
 		UserPassword: "lotus20001006",
@@ -18,17 +18,16 @@ func TestTable_Find(t *testing.T) {
 		log.Println(err)
 		return
 	}
+
 	type hello2 struct {
-		Name string
-		Say string
-		Number int64
+		Name string `crorm:"name"`
+		Say string `crorm:"say"`
+		Number int64 `crorm:"number"`
 	}
 
-	var hhhhello []hello2
-	//hhhhello := make([]Hello, 0)
-	table := db.Table("hello2")
-	log.Println(table.TableName)
-	table.Where("number = ?", 3).Find(&hhhhello)
+	hhhhello := hello2{}
 
+	err = db.Table("hello2").Where("number = ?", 3).First(&hhhhello)
 	log.Printf("info: %v\n", hhhhello)
+
 }

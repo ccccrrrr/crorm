@@ -1,4 +1,4 @@
-package structure
+package table
 
 import (
 	"log"
