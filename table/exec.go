@@ -74,6 +74,8 @@ func (exec *Exec) Delete() *Exec {
 func (exec *Exec) Find(receiver interface{}) *Exec {
 
 	query, args := exec.generateFirstQuery()
+	//log.Println(query)
+	//log.Println(args)
 	rows, err := exec.Table.DBInfo.DefaultDB.Query(query, args...)
 
 	if err != nil {
@@ -90,12 +92,13 @@ func (exec *Exec) Find(receiver interface{}) *Exec {
 	//log.Println(receiverName)
 	columnLength := len(tableColumnTypes)
 
+	maxLen := reflect.ValueOf(receiver).Elem().Len()
 	//log.Println(tableColumnNames)
 	//log.Println(receiverName)
-	ptr := -1
-	for rows.Next() {
-		res := make([]interface{}, columnLength)
 
+	ptr := -1
+	for rows.Next() && ptr < maxLen - 1 {
+		res := make([]interface{}, columnLength)
 		ptr ++
 		for i := 0; i < columnLength; i++ {
 			for j := 0; j < columnLength; j++ {
@@ -151,6 +154,10 @@ func (exec *Exec) First(receiver interface{}) *Exec {
 	receiverName := getReceiverName(receiver)
 	receiverType := getReceiverType(receiver)
 
+	log.Println(receiverName)
+	log.Println(receiverType)
+
+
 	columnLength := len(tableColumnTypes)
 	res := make([]interface{}, columnLength)
 
@@ -165,11 +172,15 @@ func (exec *Exec) First(receiver interface{}) *Exec {
 					if tableColumnTypes[i] == "varchar(64)" {
 						var a string
 						res[i] = &a
+						continue
 					}else if tableColumnTypes[i] == "int" {
 						var a int
 						res[i] = &a
+						continue
 					}
 				}
+				log.Println(errors.New("no correct name found"))
+				return exec
 			}
 		}
 		err = rows.Scan(res...)
@@ -182,7 +193,7 @@ func (exec *Exec) First(receiver interface{}) *Exec {
 			//log.Println(reflect.TypeOf(receiver).Kind().String())
 			if reflect.ValueOf(receiver).Elem().Field(i).Type() == reflect.ValueOf(res[i]).Elem().Type() {
 				reflect.ValueOf(receiver).Elem().Field(i).Set(reflect.ValueOf(res[i]).Elem())
-			}else {
+			} else {
 				log.Println("no match type")
 			}
 		}
@@ -190,6 +201,5 @@ func (exec *Exec) First(receiver interface{}) *Exec {
 		log.Println(errors.New("no matching in this condition"))
 		return exec
 	}
-
 	return exec
 }

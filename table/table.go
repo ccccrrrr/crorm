@@ -28,17 +28,3 @@ func (table *Table) clone() *Table {
 func (table *Table) table() *Table {
 	return table
 }
-
-//func (table *Table) GenerateTableQueryAndArgs() (string, []interface{}) {
-//	query := "SELECT * FROM `" + table.TableName + "` "
-//	if table.query != "" {
-//		query += "WHERE " + table.query + ";"
-//	}
-//	return query, table.args
-//}
-//
-//func (table *Table) WhereQuery(query string, args ...interface{}) *Table {
-//	table.query = query
-//	table.args = args
-//	return table
-//}

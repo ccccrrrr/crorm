@@ -2,6 +2,7 @@ package table
 
 import (
 	"crorm/typeMap"
+	"errors"
 	"log"
 	"reflect"
 )
@@ -82,6 +83,9 @@ func getReceiverType(receiver interface{}) []string {
 }
 
 func (table *Table) First(receiver interface{}) (*Table, error) {
+	if table ==  nil {
+		return nil, errors.New("no table")
+	}
 	return table.clone().Exec.First(receiver).Table, nil
 	//
 	//query, args := table.GenerateTableQueryAndArgs()

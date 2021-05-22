@@ -13,6 +13,13 @@ type Info struct {
 	Hello  string `crorm:"hello"`
 }
 
+type FakeInfo struct {
+	Name   string `crorm:"name__"`
+	Age    int    `crorm:"age__"`
+	Gender string `crorm:"gender__"`
+	Hello  string `crorm:"hello__"`
+}
+
 func main() {
 
 	db, _ := table.Open(config.Config)
@@ -32,8 +39,15 @@ func main() {
 	//
 	//myTable.Insert(&info)
 
+	fakeInfo := FakeInfo{}
+
 	myTable.Find(&infoFind)
+
+	_, err := myTable.First(&fakeInfo)
 
 	log.Println(infoFind)
 
+	log.Println(fakeInfo)
+
+	log.Println(err)
 }

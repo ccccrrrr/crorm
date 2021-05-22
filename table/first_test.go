@@ -1,19 +1,19 @@
 package table
 
 import (
+	"crorm/config"
 	"log"
+	"reflect"
 	"testing"
 )
 
 func Test_list_First(t *testing.T) {
-	config := DBConfig{
-		UserName: "root",
-		UserPassword: "lotus20001006",
-		Port : "3306",
-		Ip : "localhost",
-		DBName: "db1",
+	_config := config.Config
+	var standardConfig DBConfig
+	for i := 0; i < 5; i++ {
+		reflect.ValueOf(&standardConfig).Elem().Field(i).Set(reflect.ValueOf(&_config).Elem().Field(i))
 	}
-	db, err := Open(config)
+	db, err := Open(standardConfig)
 	if err != nil {
 		log.Println(err)
 		return
@@ -27,7 +27,7 @@ func Test_list_First(t *testing.T) {
 
 	hhhhello := hello2{}
 
-	err = db.Table("hello2").Where("number = ?", 3).First(&hhhhello)
+	_, _ = db.Table("hello2").Where("number = ?", 3).First(&hhhhello)
 	log.Printf("info: %v\n", hhhhello)
 
 }
