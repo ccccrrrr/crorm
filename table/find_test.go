@@ -1,19 +1,19 @@
-package structure
+package table
 
 import (
+	"crorm/config"
 	"log"
+	"reflect"
 	"testing"
 )
 
 func TestTable_Find(t *testing.T) {
-	config := DBConfig{
-		UserName: "root",
-		UserPassword: "lotus20001006",
-		Port : "3306",
-		Ip : "localhost",
-		DBName: "db1",
+	_config := config.Config
+	var standardConfig DBConfig
+	for i := 0; i < 5; i++ {
+		reflect.ValueOf(&standardConfig).Elem().Field(i).Set(reflect.ValueOf(&_config).Elem().Field(i))
 	}
-	db, err := Open(config)
+	db, err := Open(standardConfig)
 	if err != nil {
 		log.Println(err)
 		return

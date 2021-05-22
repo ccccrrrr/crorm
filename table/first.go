@@ -1,12 +1,14 @@
-package structure
+package table
 
 import (
+	"crorm/typeMap"
 	"errors"
 	"log"
 	"reflect"
 )
 
 func getReceiverName(receiver interface{}) []string {
+
 	var receiverName []string
 	_t := reflect.TypeOf(receiver)
 	if _t.Kind() == reflect.Ptr && _t.Elem().Kind() == reflect.Slice {
@@ -57,7 +59,7 @@ func getReceiverType(receiver interface{}) []string {
 		//name := ""
 		_type := ""
 		for i := 0; i < t.Elem().NumField(); i++ {
-			_type = TypeMap[t.Elem().Field(i).Type.String()]
+			_type = typeMap.TypeMap[t.Elem().Field(i).Type.String()]
 			receiverType = append(receiverType, _type)
 		}
 		return receiverType
@@ -72,7 +74,7 @@ func getReceiverType(receiver interface{}) []string {
 		//name := ""
 		_type := ""
 		for i := 0; i < t.Elem().NumField(); i++ {
-			_type = TypeMap[v.Elem().Field(i).Kind().String()]
+			_type = typeMap.TypeMap[v.Elem().Field(i).Kind().String()]
 			receiverType = append(receiverType, _type)
 		}
 		return receiverType
@@ -80,55 +82,60 @@ func getReceiverType(receiver interface{}) []string {
 	return nil
 }
 
-func (table *Table) First(receiver interface{}) error {
-	query, args := table.GenerateTableQueryAndArgs()
-	rows, err := table.DBInfo.DefaultDB.Query(query, args...)
-
-	if err != nil {
-		return err
+func (table *Table) First(receiver interface{}) (*Table, error) {
+	if table ==  nil {
+		return nil, errors.New("no table")
 	}
-
-	tableColumnNames := table.ColumnName
-	tableColumnTypes := table.ColumnType
-
-	receiverName := getReceiverName(receiver)
-	receiverType := getReceiverType(receiver)
-
-	columnLength := len(tableColumnTypes)
-	res := make([]interface{}, columnLength)
-	if rows.Next() {
-		for i := 0; i < columnLength; i++ {
-			for j := 0; j < columnLength; j++ {
-				if tableColumnNames[i] == receiverName[j] {
-					if tableColumnTypes[i] != receiverType[j] {
-						return errors.New("name and type mismatch")
-					}
-					if tableColumnTypes[i] == "varchar(64)" {
-						var a string
-						res[i] = &a
-					}else if tableColumnTypes[i] == "int" {
-						var a int
-						res[i] = &a
-					}
-				}
-			}
-		}
-		err = rows.Scan(res...)
-		if err != nil {
-			return err
-		}
-
-		for i := 0; i < columnLength; i++ {
-			log.Println(reflect.TypeOf(receiver).Kind().String())
-			if reflect.ValueOf(receiver).Elem().Field(i).Type() == reflect.ValueOf(res[i]).Elem().Type() {
-				reflect.ValueOf(receiver).Elem().Field(i).Set(reflect.ValueOf(res[i]).Elem())
-			}else {
-				log.Println("no match type")
-			}
-		}
-	} else {
-		return errors.New("no matching in this condition")
-	}
-
-	return nil
+	return table.clone().Exec.First(receiver).Table, nil
+	//
+	//query, args := table.GenerateTableQueryAndArgs()
+	//rows, err := table.DBInfo.DefaultDB.Query(query, args...)
+	//
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//tableColumnNames := table.ColumnName
+	//tableColumnTypes := table.ColumnType
+	//
+	//receiverName := getReceiverName(receiver)
+	//receiverType := getReceiverType(receiver)
+	//
+	//columnLength := len(tableColumnTypes)
+	//res := make([]interface{}, columnLength)
+	//if rows.Next() {
+	//	for i := 0; i < columnLength; i++ {
+	//		for j := 0; j < columnLength; j++ {
+	//			if tableColumnNames[i] == receiverName[j] {
+	//				if tableColumnTypes[i] != receiverType[j] {
+	//					return errors.New("name and type mismatch")
+	//				}
+	//				if tableColumnTypes[i] == "varchar(64)" {
+	//					var a string
+	//					res[i] = &a
+	//				}else if tableColumnTypes[i] == "int" {
+	//					var a int
+	//					res[i] = &a
+	//				}
+	//			}
+	//		}
+	//	}
+	//	err = rows.Scan(res...)
+	//	if err != nil {
+	//		return err
+	//	}
+	//
+	//	for i := 0; i < columnLength; i++ {
+	//		log.Println(reflect.TypeOf(receiver).Kind().String())
+	//		if reflect.ValueOf(receiver).Elem().Field(i).Type() == reflect.ValueOf(res[i]).Elem().Type() {
+	//			reflect.ValueOf(receiver).Elem().Field(i).Set(reflect.ValueOf(res[i]).Elem())
+	//		}else {
+	//			log.Println("no match type")
+	//		}
+	//	}
+	//} else {
+	//	return errors.New("no matching in this condition")
+	//}
+	//
+	//return nil
 }

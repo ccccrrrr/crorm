@@ -1,4 +1,4 @@
-package structure
+package typeMap
 
 var (
 	TypeMap = map[string]string{

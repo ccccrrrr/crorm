@@ -1,7 +1,9 @@
-package structure
+package table
 
 import (
+	"crorm/config"
 	"log"
+	"reflect"
 	"testing"
 )
 
@@ -31,14 +33,12 @@ import (
 
 
 func TestDB_CreateTable(t *testing.T) {
-		config := DBConfig{
-			UserName: "root",
-			UserPassword: "lotus20001006",
-			Port : "3306",
-			Ip : "localhost",
-			DBName: "db1",
-		}
-		db, err := Open(config)
+	_config := config.Config
+	var standardConfig DBConfig
+	for i := 0; i < 5; i++ {
+		reflect.ValueOf(&standardConfig).Elem().Field(i).Set(reflect.ValueOf(&_config).Elem().Field(i))
+	}
+	db, err := Open(standardConfig)
 		if err != nil {
 			log.Println(err)
 			return
@@ -50,7 +50,7 @@ func TestDB_CreateTable(t *testing.T) {
 			Number int64
 		}
 		hhhello := hello2{}
-		db.CreateTable("hello2", &hhhello)
+		db.CreateTable(&hhhello)
 
 }
 
