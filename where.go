@@ -1,4 +1,4 @@
-package table
+package crorm
 
 func (table *Table) Where(query string, args ...interface{}) *Table {
 	if table == nil {

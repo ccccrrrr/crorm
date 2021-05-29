@@ -1,4 +1,4 @@
-package table
+package crorm
 
 type Table struct {
 	DBInfo       *DB

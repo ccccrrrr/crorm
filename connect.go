@@ -1,4 +1,4 @@
-package table
+package crorm
 
 import (
 	"database/sql"

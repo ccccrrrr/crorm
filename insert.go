@@ -1,4 +1,4 @@
-package table
+package crorm
 
 
 func (table *Table) Insert(info interface{}) (*Table, error) {

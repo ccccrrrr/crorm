@@ -1,9 +1,9 @@
-package table
+package crorm
 
 import (
-	"crorm/typeMap"
-	"crorm/util"
 	"fmt"
+	"github.com/ccccrrrr/crorm/typeMap"
+	"github.com/ccccrrrr/crorm/util"
 	"log"
 	"reflect"
 )

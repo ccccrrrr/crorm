@@ -1,4 +1,4 @@
-package table
+package crorm
 
 func (table *Table) Delete() *Table {
 

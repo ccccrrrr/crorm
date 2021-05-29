@@ -1,10 +1,10 @@
-package table
+package crorm
 
 import (
-	"crorm/typeMap"
-	"crorm/util"
 	"database/sql"
 	"errors"
+	"github.com/ccccrrrr/crorm/typeMap"
+	"github.com/ccccrrrr/crorm/util"
 	"log"
 	"reflect"
 )
