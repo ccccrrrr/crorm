@@ -1,4 +1,4 @@
-module crorm
+module github.com/ccccrrrr/crorm
 
 go 1.16
 
