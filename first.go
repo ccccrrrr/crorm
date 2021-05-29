@@ -1,8 +1,8 @@
 package crorm
 
 import (
-	"crorm/typeMap"
 	"errors"
+	"github.com/ccccrrrr/crorm/typeMap"
 	"log"
 	"reflect"
 )
